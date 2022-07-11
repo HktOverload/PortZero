@@ -1,5 +1,7 @@
 # PortZero by HktOverload
 
+import operator
+
 """
 Exports!
 
@@ -62,3 +64,44 @@ class Export(object):
             raise InvalidExportTarget(target)
         if self.shouldSet:
             target['__all__'] = self.allValue
+
+"""
+Tests!
+
+First, declare a global variable tests as:
+tests = []
+Then, define tests using @addTest(tests)
+Finally, add the segment
+if __name__ == '__main__':
+    [ i() for i in tests ]
+"""
+
+def addTest(tests):
+    def decorator(f):
+        def inner():
+            failed = False
+            try:
+                f()
+                print(f'[OK] Test {f.__name__} passed!')
+            except Exception as e:
+                print(f'[FAIL] Test {f.__name__} failed:\n{e}')
+                failed = True
+            if failed:
+                print(f'[FAIL] Running again (for stacktrace):')
+                f()
+        tests.append(inner)
+    return decorator
+
+def almostEqual(a, b) -> bool:
+    return abs(a - b) < (10**-5)
+
+def assertEq(lhs, rhs = True):
+    if isinstance(lhs, float) and isinstance(rhs, float):
+        f = almostEqual
+    else:
+        f = operator.eq
+    if not f(lhs, rhs):
+        print(f'[FAIL] In assertEq, LHS = {lhs}')
+        print(f'[FAIL] In assertEq, RHS = {rhs}')
+        print(f'[FAIL] ^^^^^^^^^^^^ Compared with {f.__name__}')
+        raise AssertionError

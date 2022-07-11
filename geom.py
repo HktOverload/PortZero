@@ -1,6 +1,6 @@
 # PortZero by HktOverload
 
-import typing
+import random, typing
 from utils import *
 
 Export(...) @ globals()
@@ -30,6 +30,14 @@ class Coord2(typing.NamedTuple):
         return ( 0.0
             + (self.x * other.x)
             + (self.y * other.y)
+        )
+    
+    def __eq__(self, other):
+        if not isinstance(other, Coord2):
+            return NotImplemented
+        return (
+                almostEqual(self.x, other.x)
+            and almostEqual(self.y, other.y)
         )
 
 class Coord3(typing.NamedTuple):
@@ -62,6 +70,15 @@ class Coord3(typing.NamedTuple):
             + (self.z * other.z)
         )
 
+    def __eq__(self, other):
+        if not isinstance(other, Coord3):
+            return NotImplemented
+        return (
+                almostEqual(self.x, other.x)
+            and almostEqual(self.y, other.y)
+            and almostEqual(self.z, other.z)
+        )
+
     def dropTo2(self) -> Coord2:
         return Coord2(x=self.x, y=self.y)
 
@@ -81,6 +98,15 @@ class Tri2(typing.NamedTuple):
             a = fn(self.a),
             b = fn(self.b),
             c = fn(self.c),
+        )
+    
+    def __eq__(self, other):
+        if not isinstance(other, Tri2):
+            return NotImplemented
+        return (
+                self.a == other.a
+            and self.b == other.b
+            and self.c == other.c
         )
 
 class Tri3(typing.NamedTuple):
@@ -102,6 +128,15 @@ class Tri3(typing.NamedTuple):
 
     def dropTo2(self):
         return self.mapTo2(lambda x: x.dropTo2())
+    
+    def __eq__(self, other):
+        if not isinstance(other, Tri3):
+            return NotImplemented
+        return (
+                self.a == other.a
+            and self.b == other.b
+            and self.c == other.c
+        )
 
 class Hull(typing.NamedTuple):
     verts: list[float]
@@ -142,6 +177,25 @@ class Coord3H(typing.NamedTuple):
             + (self.w * other.w)
         )
     
+    def __eq__(self, other):
+        if not isinstance(other, Coord3H):
+            return NotImplemented
+        return (
+                almostEqual(self.x, other.x)
+            and almostEqual(self.y, other.y)
+            and almostEqual(self.z, other.z)
+            and almostEqual(self.w, other.w)
+        )
+
+    @staticmethod
+    def rand():
+        return Coord3H(
+            (random.random() - 0.5) * 2000,
+            (random.random() - 0.5) * 2000,
+            (random.random() - 0.5) * 2000,
+            (random.random() - 0.5) * 2000,
+        )
+    
     def pd(self):
         return Coord3(
             x = self.x / self.w,
@@ -155,8 +209,8 @@ class Xform3(typing.NamedTuple):
 
     def applyH(self, c: Coord3H):
         m = self
-        return ( 0.0
-            + (c.x * m.a)
+        return (
+              (c.x * m.a)
             + (c.y * m.b)
             + (c.z * m.c)
             + (c.w * m.d)
@@ -185,4 +239,23 @@ class Xform3(typing.NamedTuple):
             Coord3H(r.b@s.a, r.b@s.b, r.b@s.c, r.b@s.d),
             Coord3H(r.c@s.a, r.c@s.b, r.c@s.c, r.c@s.d),
             Coord3H(r.d@s.a, r.d@s.b, r.d@s.c, r.d@s.d),
+        )
+    
+    def __eq__(self, other):
+        if not isinstance(other, Xform3):
+            return NotImplemented
+        return (
+                self.a == other.a
+            and self.b == other.b
+            and self.c == other.c
+            and self.d == other.d
+        )
+    
+    @staticmethod
+    def rand():
+        return Xform3(
+            Coord3H.rand(),
+            Coord3H.rand(),
+            Coord3H.rand(),
+            Coord3H.rand(),
         )
