@@ -45,11 +45,38 @@ class Coord3(typing.NamedTuple):
             z = self.z * other,
         )
     
-    def dropTo2(self):
+    def dropTo2(self) -> Coord2:
         return Coord2(x=self.x, y=self.y)
+
+class Tri2(typing.NamedTuple):
+    a: Coord2; b: Coord2; c: Coord2
+
+    def mapVerts(self, fn: typing.Callable[[Coord2], Coord2]):
+        return Tri2(
+            a = fn(self.a),
+            b = fn(self.b),
+            c = fn(self.c),
+        )
 
 class Tri3(typing.NamedTuple):
     a: Coord3; b: Coord3; c: Coord3
+
+    def mapVerts(self, fn: typing.Callable[[Coord3], Coord3]):
+        return Tri3(
+            a = fn(self.a),
+            b = fn(self.b),
+            c = fn(self.c),
+        )
+    
+    def mapTo2(self, fn: typing.Callable[[Coord3], Coord2]):
+        return Tri2(
+            a = fn(self.a),
+            b = fn(self.b),
+            c = fn(self.c),
+        )
+
+    def dropTo2(self):
+        return self.mapTo2(lambda x: x.dropTo2())
 
 class Hull(typing.NamedTuple):
     verts: list[float]

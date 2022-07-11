@@ -17,3 +17,6 @@ class Viewport(object):
             return None
         fac = self.focalLength / v.z
         return fac * v.dropTo2()
+    
+    def mapTri(self, tri: Tri3) -> Tri2:
+        return tri.mapTo2(self.map)
