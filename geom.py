@@ -23,6 +23,14 @@ class Coord2(typing.NamedTuple):
             x = self.x * other,
             y = self.y * other,
         )
+    
+    def __matmul__(self, other):
+        if not isinstance(other, Coord3):
+            return NotImplemented
+        return ( 0.0
+            + (self.x * other.x)
+            + (self.y * other.y)
+        )
 
 class Coord3(typing.NamedTuple):
     x: float; y: float; z: float
@@ -44,7 +52,16 @@ class Coord3(typing.NamedTuple):
             y = self.y * other,
             z = self.z * other,
         )
-    
+
+    def __matmul__(self, other):
+        if not isinstance(other, Coord3):
+            return NotImplemented
+        return ( 0.0
+            + (self.x * other.x)
+            + (self.y * other.y)
+            + (self.z * other.z)
+        )
+
     def dropTo2(self) -> Coord2:
         return Coord2(x=self.x, y=self.y)
 
@@ -115,6 +132,16 @@ class Coord3H(typing.NamedTuple):
             w = self.w * other,
         )
     
+    def __matmul__(self, other):
+        if not isinstance(other, Coord3H):
+            return NotImplemented
+        return ( 0.0
+            + (self.x * other.x)
+            + (self.y * other.y)
+            + (self.z * other.z)
+            + (self.w * other.w)
+        )
+    
     def pd(self):
         return Coord3(
             x = self.x / self.w,
@@ -123,8 +150,8 @@ class Coord3H(typing.NamedTuple):
         )
 
 class Xform3(typing.NamedTuple):
-    # Columns
     a: Coord3H; b: Coord3H; c: Coord3H; d: Coord3H
+    # Columns
 
     def applyH(self, c: Coord3H):
         m = self
@@ -139,3 +166,23 @@ class Xform3(typing.NamedTuple):
         return self.applyH(
             c.toH()
         ).pd()
+    
+    def t(self):
+        m = self
+        return Xform3(
+            Coord3H(m.a.x, m.b.x, m.c.x, m.d.x),
+            Coord3H(m.a.y, m.b.y, m.c.y, m.d.y),
+            Coord3H(m.a.z, m.b.z, m.c.z, m.d.z),
+            Coord3H(m.a.w, m.b.w, m.c.w, m.d.w),
+        )
+
+    def __matmul__(self, other):
+        if not isinstance(other, Xform3):
+            return NotImplemented
+        r, s = self, other.t()
+        return Xform3(
+            Coord3H(r.a@s.a, r.a@s.b, r.a@s.c, r.a@s.d),
+            Coord3H(r.b@s.a, r.b@s.b, r.b@s.c, r.b@s.d),
+            Coord3H(r.c@s.a, r.c@s.b, r.c@s.c, r.c@s.d),
+            Coord3H(r.d@s.a, r.d@s.b, r.d@s.c, r.d@s.d),
+        )
