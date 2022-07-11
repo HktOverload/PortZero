@@ -16,4 +16,4 @@ class Viewport(object):
         if v.z <= 0:
             return None
         fac = self.focalLength / v.z
-        return fac * v.swizzle('xy')
+        return fac * v.dropTo2()
