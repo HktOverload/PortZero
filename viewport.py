@@ -12,8 +12,8 @@ class Viewport(object):
         self.xform = xform
     
     def map(self, vert: Coord3) -> Coord2:
-        x, y, z = self.xform.apply(vert)
-        if z <= 0:
+        v = self.xform.apply(vert)
+        if v.z <= 0:
             return None
-        fac = self.focalLength / z
-        return fac * Coord2(x=x, y=y)
+        fac = self.focalLength / v.z
+        return fac * v.swizzle('xy')

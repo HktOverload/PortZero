@@ -8,6 +8,14 @@ Export(...) @ globals()
 class Coord2(typing.NamedTuple):
     x: float; y: float
 
+    def __rmul__(self, other):
+        if not isinstance(other, float):
+            return NotImplemented
+        return Coord2(
+            x = x * other,
+            y = y * other,
+        )
+
 class Coord3(typing.NamedTuple):
     x: float; y: float; z: float
 
