@@ -19,3 +19,6 @@ class Hull(typing.NamedTuple):
     tris: list[Tri3]
 
 Geometry = list[Hull]
+
+class Xform3(object):
+    'TODO'
