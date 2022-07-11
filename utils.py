@@ -1,6 +1,6 @@
 # PortZero by HktOverload
 
-import operator
+import operator, random
 
 """
 Exports!
@@ -81,6 +81,7 @@ def addTest(tests):
         def inner():
             failed = False
             try:
+                random.seed(442)
                 f()
                 print(f'[OK] Test {f.__name__} passed!')
             except Exception as e:
@@ -88,6 +89,7 @@ def addTest(tests):
                 failed = True
             if failed:
                 print(f'[FAIL] Running again (for stacktrace):')
+                random.seed(442)
                 f()
         tests.append(inner)
     return decorator
