@@ -3,7 +3,7 @@
 from utils import *
 from geom import *
 
-Export(None) @ globals()
+Export('Viewport') @ globals()
 
 class Viewport(object):
     __slots__ = 'focalLength', 'xform'
