@@ -35,7 +35,7 @@ class Scene(object):
         for entity, geometry in self.entia:
             if entity in self.observers['!intersect']:
                 for otherEntity, other in self.entia:
-                    if intersection(geometry, other):
+                    if intersects(geometry, other, pedantic = False):
                         self.events.append(
                             Event(
                                 name = '!intersect',

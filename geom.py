@@ -1,5 +1,6 @@
 # PortZero by HktOverload
 
+import itertools
 import random
 from utils import *
 
@@ -139,10 +140,63 @@ class Tri3(t.NamedTuple):
         )
 
 class Hull(t.NamedTuple):
-    verts: list[float]
-    tris: list[Tri3]
+    verts: t.List[float]
+    tris: t.List[Tri3]
 
-Geometry = list[Hull]
+class AABox(t.NamedTuple):
+    c1: Coord3; c2: Coord3
+
+class Segment(t.NamedTuple):
+    a: Coord3; b: Coord3
+
+Geometry = t.List[t.Union[Hull, AABox, Segment]]
+
+def hullIntersectsBox(a: Hull, b: AABox) -> bool:
+    ...
+
+def hullIntersectsSegment(a: Hull, b: Segment) -> bool:
+    ...
+
+def boxIntersectsBox(a: Box, b: Box) -> bool:
+    ...
+
+def boxIntersectsSegment(a: Box, b: Box) -> bool:
+    ...
+
+def segmentIntersectsSegment(a: Segment, b: Segment) -> bool:
+    ...
+
+def intersects1(a, b, rcount = 0, pedantic = True):
+    if rcount > 1:
+        raise f'intersects1(a: {type(a)}, b: {type(b)}) will recurse forever'
+    if isinstance(a, Hull) and isinstance(b, Hull):
+        if not pedantic:
+            return False
+        raise 'Testing Hull-Hull intersections is just too slow :('
+    elif isinstance(a, Hull) and isinstance(b, AABox):
+        return hullIntersectsBox(a, b)
+    elif isinstance(a, Hull) and isinstance(b, Segment):
+        return hullIntersectsSegment(a, b)
+    elif isinstance(a, AABox) and isinstance(b, Hull):
+        return intersects1(b, a, rcount = rcount + 1)
+    elif isinstance(a, AABox) and isinstance(b, AABox):
+        return boxIntersectsBox(a, b)
+    elif isinstance(a, AABox) and isinstance(b, Segment):
+        return boxIntersectsSegment(a, b)
+    elif isinstance(a, Segment) and isinstance(b, Hull):
+        return intersects1(b, a, rcount = rcount + 1)
+    elif isinstance(a, Segment) and isinstance(b, AABox):
+        return intersects1(b, a, rcount = rcount + 1)
+    elif isinstance(a, Segment) and isinstance(b, Segment):
+        return segmentIntersectsSegment(a, b)
+    else:
+        raise f'Cannot test intersection between {type(a)} and {type(b)}'
+
+def intersects(a: Geometry, b: Geometry, pedantic: bool = True) -> bool:
+    for aSub, bSub in itertools.product(a, b):
+        if intersects1(aSub, bSub, pedantic=pedantic):
+            return False
+    return True
 
 class Coord3H(t.NamedTuple):
     x: float; y: float; z: float; w: float
