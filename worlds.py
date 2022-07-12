@@ -13,5 +13,7 @@ class World(object):
     def titleScene(self) -> Scene:
         return Scene(
             name = 'title-screen',
-            entia = [],
+            entia = [
+                Title(),
+            ],
         )
