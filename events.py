@@ -5,7 +5,7 @@ from utils import *
 
 Export(...) @ globals()
 
-class Event(typing.NamedTuple):
+class Event(t.NamedTuple):
     name: str
     eventType: t.Literal
     data: dict[str, typing.Any]
