@@ -1,10 +1,11 @@
 # PortZero by HktOverload
 
-import typing
+import typing as t
 from utils import *
 
 Export(...) @ globals()
 
-class ExtEvent(typing.NamedTuple):
+class Event(typing.NamedTuple):
     name: str
+    eventType: t.Literal
     data: dict[str, typing.Any]

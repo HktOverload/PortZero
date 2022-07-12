@@ -27,5 +27,7 @@ class Scene(object):
         for event in events:
             for observer in self.observers[event.name]:
                 observer.recv(event)
+        self.sendSceneEvents()
+        
         for i, (entity, _) in enumerate(self.entia):
             self.entia[i][1] = entity.geometry()
