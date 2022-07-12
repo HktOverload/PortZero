@@ -19,5 +19,9 @@ class Entity(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def sends(self) -> t.Generator[Event, None, None]:
+        pass
+
+    @abc.abstractmethod
     def geometry(self) -> Geometry:
         pass

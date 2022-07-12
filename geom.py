@@ -1,6 +1,6 @@
 # PortZero by HktOverload
 
-import random, typing as t
+import random
 from utils import *
 
 Export(...) @ globals()

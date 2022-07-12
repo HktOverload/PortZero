@@ -1,6 +1,6 @@
 # PortZero by HktOverload
 
-import operator, random
+import operator, random, typing as t
 
 """
 Exports!
