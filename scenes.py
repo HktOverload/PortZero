@@ -20,7 +20,15 @@ class Scene(object):
         self.entia = entia
         self.observers = observers
     
+    def updateObservers(self, i: int):
+        entity, _ = self.entia[i][0]
+        for eventName in entity.observes():
+            if eventName not in self.observers:
+                self.observers[eventName] = []
+            self.observers[eventName].append(entity)
+    
     def tick(self, events: list[Event]):
+        self.updateObservers()
         for event in events:
             for observer in self.observers[event.name]:
                 observer.recv(event)

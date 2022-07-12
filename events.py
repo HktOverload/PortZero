@@ -7,5 +7,5 @@ Export(...) @ globals()
 
 class Event(t.NamedTuple):
     name: str
-    eventCls: t.Literal['wld', 'ext', 'scn']
     data: dict[str, t.Any]
+    isSceneEvent: bool = False
