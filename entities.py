@@ -24,3 +24,6 @@ class Entity(abc.ABC):
     @abc.abstractmethod
     def geometry(self) -> Geometry:
         pass
+
+    def drawOverlay(self) -> None:
+        pass
