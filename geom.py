@@ -1,7 +1,6 @@
 # PortZero by HktOverload
 
-import itertools
-import random
+import itertools, random
 from utils import *
 
 Export(...) @ globals()

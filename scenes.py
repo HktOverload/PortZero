@@ -1,6 +1,6 @@
 # PortZero by HktOverload
 
-import collections, itertools
+import collections
 from utils import *
 from events import *
 from entities import *
