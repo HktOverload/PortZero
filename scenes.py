@@ -12,7 +12,7 @@ Ens = tuple[Entity, Geometry]
 
 class Scene(object):
     __slots__ = 'name', 'entia', 'observers', 'events'
-    def __init__( self, name: str, entia: list[Ens]):
+    def __init__(self, name: str, entia: list[Ens]):
         self.name = name
         self.entia = entia
         self.observers: t.Dict[str, t.Set[Entity]] = {}
