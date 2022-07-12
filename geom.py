@@ -1,11 +1,11 @@
 # PortZero by HktOverload
 
-import random, typing
+import random, typing as t
 from utils import *
 
 Export(...) @ globals()
 
-class Coord2(typing.NamedTuple):
+class Coord2(t.NamedTuple):
     x: float; y: float
 
     def __add__(self, other):
@@ -40,7 +40,7 @@ class Coord2(typing.NamedTuple):
             and almostEqual(self.y, other.y)
         )
 
-class Coord3(typing.NamedTuple):
+class Coord3(t.NamedTuple):
     x: float; y: float; z: float
 
     def __add__(self, other):
@@ -90,10 +90,10 @@ class Coord3(typing.NamedTuple):
             w = 1,
         )
 
-class Tri2(typing.NamedTuple):
+class Tri2(t.NamedTuple):
     a: Coord2; b: Coord2; c: Coord2
 
-    def mapVerts(self, fn: typing.Callable[[Coord2], Coord2]):
+    def mapVerts(self, fn: t.Callable[[Coord2], Coord2]):
         return Tri2(
             a = fn(self.a),
             b = fn(self.b),
@@ -109,17 +109,17 @@ class Tri2(typing.NamedTuple):
             and self.c == other.c
         )
 
-class Tri3(typing.NamedTuple):
+class Tri3(t.NamedTuple):
     a: Coord3; b: Coord3; c: Coord3
 
-    def mapVerts(self, fn: typing.Callable[[Coord3], Coord3]):
+    def mapVerts(self, fn: t.Callable[[Coord3], Coord3]):
         return Tri3(
             a = fn(self.a),
             b = fn(self.b),
             c = fn(self.c),
         )
     
-    def mapTo2(self, fn: typing.Callable[[Coord3], Coord2]):
+    def mapTo2(self, fn: t.Callable[[Coord3], Coord2]):
         return Tri2(
             a = fn(self.a),
             b = fn(self.b),
@@ -138,13 +138,13 @@ class Tri3(typing.NamedTuple):
             and self.c == other.c
         )
 
-class Hull(typing.NamedTuple):
+class Hull(t.NamedTuple):
     verts: list[float]
     tris: list[Tri3]
 
 Geometry = list[Hull]
 
-class Coord3H(typing.NamedTuple):
+class Coord3H(t.NamedTuple):
     x: float; y: float; z: float; w: float
 
     def __add__(self, other):
@@ -203,7 +203,7 @@ class Coord3H(typing.NamedTuple):
             z = self.z / self.w,
         )
 
-class Xform3(typing.NamedTuple):
+class Xform3(t.NamedTuple):
     a: Coord3H; b: Coord3H; c: Coord3H; d: Coord3H
     # Columns
 

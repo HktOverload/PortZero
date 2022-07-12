@@ -11,11 +11,11 @@ Export(...) @ globals()
 class Entity(abc.ABC):
 
     @abc.abstractmethod
-    def rebuild(self, world: World):
+    def observes(self) -> list[str]:
         pass
 
     @abc.abstractmethod
-    def recv(self, event: ExtEvent) -> None:
+    def recv(self, event: Event) -> None:
         pass
 
     @abc.abstractmethod
