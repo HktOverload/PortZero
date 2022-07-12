@@ -145,57 +145,41 @@ class Hull(t.NamedTuple):
 class AABox(t.NamedTuple):
     c1: Coord3; c2: Coord3
 
-class Segment(t.NamedTuple):
-    a: Coord3; b: Coord3
+    def promoteToHull(self) -> Hull:
+        ...
 
-Geometry = t.List[t.Union[Hull, AABox, Segment]]
+Geometry = t.List[t.Union[Hull, AABox]]
 
-def hullIntersectsBox(a: Hull, b: AABox) -> bool:
+def fastAABoxIntersection(a: AABox, b: AABox) -> bool:
     ...
 
-def hullIntersectsSegment(a: Hull, b: Segment) -> bool:
+def gjkIntersection(a: Hull, b: Hull) -> bool:
     ...
 
-def boxIntersectsBox(a: Box, b: Box) -> bool:
-    ...
-
-def boxIntersectsSegment(a: Box, b: Box) -> bool:
-    ...
-
-def segmentIntersectsSegment(a: Segment, b: Segment) -> bool:
-    ...
-
-def intersects1(a, b, rcount = 0, pedantic = True):
-    if rcount > 1:
-        raise f'intersects1(a: {type(a)}, b: {type(b)}) will recurse forever'
-    if isinstance(a, Hull) and isinstance(b, Hull):
-        if not pedantic:
-            return False
-        raise 'Testing Hull-Hull intersections is just too slow :('
-    elif isinstance(a, Hull) and isinstance(b, AABox):
-        return hullIntersectsBox(a, b)
-    elif isinstance(a, Hull) and isinstance(b, Segment):
-        return hullIntersectsSegment(a, b)
-    elif isinstance(a, AABox) and isinstance(b, Hull):
-        return intersects1(b, a, rcount = rcount + 1)
-    elif isinstance(a, AABox) and isinstance(b, AABox):
-        return boxIntersectsBox(a, b)
-    elif isinstance(a, AABox) and isinstance(b, Segment):
-        return boxIntersectsSegment(a, b)
-    elif isinstance(a, Segment) and isinstance(b, Hull):
-        return intersects1(b, a, rcount = rcount + 1)
-    elif isinstance(a, Segment) and isinstance(b, AABox):
-        return intersects1(b, a, rcount = rcount + 1)
-    elif isinstance(a, Segment) and isinstance(b, Segment):
-        return segmentIntersectsSegment(a, b)
+def intersects1(a, b):
+    if isinstance(a, AABox) and isinstance(b, AABox):
+        return fastAABoxIntersection(a, b)
+    elif isinstance(a, AABox):
+        return gjkIntersection(a.promoteToHull(), b)
+    elif isinstance(b, AABox):
+        return gjkIntersection(a, b.promoteToHull())
     else:
-        raise f'Cannot test intersection between {type(a)} and {type(b)}'
+        return gjkIntersection(a, b)
 
-def intersects(a: Geometry, b: Geometry, pedantic: bool = True) -> bool:
+def intersects(a: Geometry, b: Geometry) -> bool:
     for aSub, bSub in itertools.product(a, b):
-        if intersects1(aSub, bSub, pedantic=pedantic):
+        if intersects1(aSub, bSub):
             return False
     return True
+
+def trisOfSub(sub: t.Union[Hull, AABox]):
+    if isinstance(sub, Hull):
+        return sub.tris
+    else:
+        return sub.promoteToHull().tris
+
+def tris(geometry: Geometry) -> list[Tri3]:
+    return [ i for sub in geometry for i in trisOfSub(sub) ]
 
 class Coord3H(t.NamedTuple):
     x: float; y: float; z: float; w: float
