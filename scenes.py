@@ -33,7 +33,7 @@ class Scene(object):
         self.updateObservers()
         self.sendSceneEvents()
         for event in self.events:
-            if event.name == '--spawn--':
+            if event.name == '!spawn':
                 self.entia.append((event.data['new-entity'], None))
             else:
                 for observer in self.observers[event.name]:
