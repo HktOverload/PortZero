@@ -20,14 +20,9 @@ class Scene(object):
         self.entia = entia
         self.observers = observers
     
-    def tick(self, world: World, events: list[ExtEvent]):
-        for entity, _ in self.entia:
-            entity.rebuild(world)
-        self.sendSceneEvents()
+    def tick(self, events: list[Event]):
         for event in events:
             for observer in self.observers[event.name]:
                 observer.recv(event)
-        self.sendSceneEvents()
-        
         for i, (entity, _) in enumerate(self.entia):
             self.entia[i][1] = entity.geometry()

@@ -7,5 +7,5 @@ Export(...) @ globals()
 
 class Event(t.NamedTuple):
     name: str
-    eventType: t.Literal
-    data: dict[str, typing.Any]
+    eventCls: t.Literal['wld', 'ext', 'scn']
+    data: dict[str, t.Any]
