@@ -2,8 +2,8 @@
 
 import collections
 from utils import *
-from events import *
 from entities import *
+from events import *
 from geom import *
 
 Export('Scene') @ globals()
@@ -12,13 +12,14 @@ Ens = tuple[Entity, Geometry]
 
 class Scene(object):
     __slots__ = 'name', 'entia', 'observers', 'events'
-    def __init__(self, name: str, entia: list[Ens]):
+    def __init__(self, name: str, entities: t.List[Entity]):
         self.name = name
-        self.entia = entia
+        self.entia: t.List[Ens] = [ (i, None) for i in entities ]
         self.observers: t.Dict[str, t.Set[Entity]] = {}
         self.events: t.Deque[Event] = collections.deque()
-        for i in range(len(entia)):
+        for i, (entity, _) in enumerate(self.entia):
             self.updateObservers(i)
+            self.entia[i][1] = entity.geometry()
 
     def updateObservers(self, i: int):
         entity, _ = self.entia[i][0]

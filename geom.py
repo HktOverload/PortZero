@@ -151,10 +151,10 @@ class AABox(t.NamedTuple):
 Geometry = t.List[t.Union[Hull, AABox]]
 
 def fastAABoxIntersection(a: AABox, b: AABox) -> bool:
-    ...
+    raise NotImplementedError
 
 def gjkIntersection(a: Hull, b: Hull) -> bool:
-    ...
+    raise NotImplementedError
 
 def intersects1(a, b):
     if isinstance(a, AABox) and isinstance(b, AABox):

@@ -4,7 +4,6 @@ import abc
 from events import *
 from utils import *
 from geom import *
-from worlds import *
 
 Export(...) @ globals()
 
