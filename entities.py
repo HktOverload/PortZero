@@ -1,6 +1,7 @@
 # PortZero by HktOverload
 
 import abc
+from lib2to3.pytree import Base
 from events import *
 from utils import *
 from geom import *
@@ -9,17 +10,14 @@ Export(...) @ globals()
 
 class Entity(abc.ABC):
 
-    @abc.abstractmethod
     def observes(self) -> list[str]:
-        pass
+        return []
 
-    @abc.abstractmethod
     def recv(self, event: Event) -> None:
-        pass
+        raise UnknownMsg(event.name)
 
-    @abc.abstractmethod
     def sends(self) -> t.Generator[Event, None, None]:
-        pass
+        yield from ()
 
     @abc.abstractmethod
     def geometry(self) -> Geometry:
@@ -27,3 +25,21 @@ class Entity(abc.ABC):
 
     def drawOverlay(self) -> None:
         pass
+
+class UnknownMsg(BaseException):
+    def __init__(self, name: str):
+        self.name = name
+
+    def __str__(self):
+        return f'Cannot process message (with name {self.name})'
+
+class Title(Entity):
+    __slots__ = ()
+    def __init__(self):
+        pass
+
+    def geometry(self):
+        return []
+    
+    def drawOverlay(self):
+        print('Welcome!')
